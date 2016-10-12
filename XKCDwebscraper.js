@@ -15,6 +15,8 @@ request(url, function(error, response, body) {
 	//	console.log(title);
 		json.title = title;
 		json.transcript = transcript;
+		response.status(200).json(json);
+
 	}
 	else{
 		console.log("we got an error: " + error);
