@@ -23,14 +23,19 @@ app.get("/latest", function(req, res) {
 		if(!error){
 			var $ = cheerio.load(body);
 			transcript = "";
-			json = {title : "", transcript : ""}
-			$("dd").each(function(){
+			json = {title : "", transcript : ""};
+			transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").text();
+			/*$("dd").each(function(){
 				transcript += $(this).text();
-			})
+			});*/
 		//	console.log(transcript);
 			title = $("span[style='color:grey']").parent().text().substring(12);
 		//	console.log(title);
 			json.title = title;
+		//	explanation = "";
+		//   	explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not("table").text();
+		//	explanation = explanation.replace(/\n/g, " ");
+		//	json.explanation = explanation;
 			transcript = transcript.replace(/\n/g, " ");
 			transcript = transcript.replace(/:/g, " says");
 			json.transcript = transcript;
