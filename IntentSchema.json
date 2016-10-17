@@ -1,0 +1,28 @@
+{
+  "intents": [
+    {
+      "intent": "GetMostRecentComic"
+    },
+    {
+      "intent": "GetRandomComic"
+    },
+    {
+      "intent": "GetExplanation"
+    },
+    {
+      "intent": "GetNextComic"
+    },
+    {
+      "intent": "GetPreviousComic"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
