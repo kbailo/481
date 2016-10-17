@@ -18,21 +18,23 @@ var server = app.listen(process.env.PORT || 8080, function () {
 
 
 app.get("/latest", function(req, res) {
-	url = 'http://www.explainxkcd.com/wiki/index.php/1744';
+	url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
 	request(url, function(error, response, body) {
 		if(!error){
 			var $ = cheerio.load(body);
 			transcript = "";
 			json = {title : "", transcript : ""}
-			$("dd").not("div[style='border:1px solid grey; background:#eee; padding:1em;'] dl dd").each(function(){
+			$("dd").each(function(){
 				transcript += $(this).text();
 			})
 		//	console.log(transcript);
 			title = $("span[style='color:grey']").parent().text().substring(12);
 		//	console.log(title);
 			json.title = title;
+			transcript = transcript.replace(/\n/g, " ");
+			transcript = transcript.replace(/:/g, " says");
 			json.transcript = transcript;
-			res.status(200).json(json);
+			res.status(200).json(json)
 		}
 		else{
 			console.log("we got an error: " + error);
