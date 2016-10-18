@@ -26,7 +26,6 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                var json = {title : "", transcript : ""};
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 transcript = transcript.replace(/\n/g, " ");
