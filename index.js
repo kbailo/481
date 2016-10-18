@@ -16,27 +16,31 @@ exports.handler = function(event, context, callback) {
 };
 
 var handlers = {
-    'GetMostRecentComic': function () {   
+    'GetMostRecentComic': function () {
+        this.emit(':tell', 'This is our most recent comic function');
     },
     'GetRandomComic': function () {
-
+        this.emit(':tell', 'This is our random comic function');
     },
     'GetExplanation': function () {
-
+        this.emit(':tell', 'This is our explanation function');
     },
     'GetNextComic': function () {
-
+        this.emit(':tell', 'This is our next comic function');
     },
     'GetPreviousComic': function () {
-
+        this.emit(':tell', 'This is our previous comic function');
     },
     'AMAZON.HelpIntent': function () {
-
+        // ToDo: verify that we are passing the right paramaters to emit for this intent
+        var speechOutput = "This is our help intent";
+        var reprompt = "What can I help you with?";
+        this.emit(':tell', speechOutput, reprompt);
     },
     'AMAZON.CancelIntent': function () {
-
+        this.emit(':tell', 'Canceling, Goodbye!');
     },
     'AMAZON.StopIntent': function () {
-
+        this.emit(':tell', 'Stopping, Goodbye!');
     }
 };
