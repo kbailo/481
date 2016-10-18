@@ -20,6 +20,7 @@ exports.handler = function(event, context, callback) {
 
 var handlers = {
     'GetMostRecentComic': function () {
+        var func_obj = this;
         var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
         var text = "";
         request(url, function(error, response, body) {
@@ -34,10 +35,10 @@ var handlers = {
                 transcript = transcript.replace(/:/g, " says");
                 json.transcript = transcript;
                 text = json.transcript;
-                this.emit(':tell', text);
+                func_obj.emit(':tell', text);
             }
             else{
-                this.emit(':tell', "We're sorry, it looks like there was an error");
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
     },
