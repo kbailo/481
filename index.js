@@ -22,7 +22,6 @@ var handlers = {
     'GetMostRecentComic': function () {
         var func_obj = this;
         var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
-        var text = "";
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
@@ -30,12 +29,9 @@ var handlers = {
                 var json = {title : "", transcript : ""};
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
-                json.title = title;
                 transcript = transcript.replace(/\n/g, " ");
                 transcript = transcript.replace(/:/g, " says");
-                json.transcript = transcript;
-                text = json.transcript;
-                func_obj.emit(':tell', text);
+                func_obj.emit(':tell', transcript);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
