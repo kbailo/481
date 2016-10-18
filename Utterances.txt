@@ -4,25 +4,21 @@ GetMostRecentComic most recent comic
 GetMostRecentComic new comic
 GetMostRecentComic newest x k c d
 GetMostRecentComic newest comic
-
 GetRandomComic a random comic
 GetRandomComic a random x k c d
 GetRandomComic read me a comic
 GetRandomComic an old comic
-
 GetExplanation I don't get it
 GetExplanation what does that mean
 GetExplanation why is that funny
 GetExplanation explain it to me
 GetExplanation explain that to me
 GetExplanation I'm confused
-
 GetNextComic next comic
 GetNextComic read me the next comic
 GetNextComic what is the next comic
 GetNextComic read another
 GetNextComic next x k c d
-
 GetPreviousComic previous comic
 GetPreviousComic older comic
 GetPreviousComic one back
