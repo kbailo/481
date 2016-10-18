@@ -1,5 +1,8 @@
 'use strict';
 var Alexa = require('alexa-sdk');
+var cheerio = require("cheerio");
+var request = require('request');
+var async = require('async');
 
 var SKILL_NAME = 'X K C D';
 
