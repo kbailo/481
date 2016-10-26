@@ -28,7 +28,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
