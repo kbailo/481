@@ -27,3 +27,16 @@ You must upload an updated zip file containing index.js and the node_modules fol
   * Alexa Skill and AWS Lambda have been created with all group members able to access them
   * Most Recent Comic intent is fully functional
   * All other intents return unique text to show they are connected
+
+### Beta
+ * Previous / Next / Sessions - Matt
+ * Explanation - Brian
+ * Random - Kara
+ * Title Text - Brian
+ * Specific Comic - Brian
+ * Saving Favorites - Michal
+ * Weed out / warn/prompt of long/incomplete transcripts - Matt
+ * Help Intent -  Kara
+ * Who are the Characters intent - Kara
+ * Intro to XKCD intent - Kara
+ * Publish to Amazon App Store - Kara
