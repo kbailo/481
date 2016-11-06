@@ -59,6 +59,7 @@ var handlers = {
         var next_index = this.attributes['current_index'] + 1;
 
         // ToDo write code to scrape comic
+        // ToDo upon success, update current_index variable
         this.emit(':tell', 'This is our next comic function');
     },
     'GetPreviousComic': function () {
@@ -67,6 +68,7 @@ var handlers = {
         var previous_index = this.attributes['current_index'] - 1;
 
         // ToDo write code to scrape comic
+        // ToDo upon success, update current_index variable
         this.emit(':tell', 'This is our previous comic function');
     },
     'AMAZON.HelpIntent': function () {
