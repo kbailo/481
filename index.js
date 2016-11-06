@@ -19,6 +19,9 @@ exports.handler = function(event, context, callback) {
 
 var handlers = {
     'GetMostRecentComic': function () {
+        // ToDo: change this to pull the most recent comic number
+        this.attributes['current_index'] = 1755;
+
         var func_obj = this;
         // url of the most recent xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
@@ -42,15 +45,28 @@ var handlers = {
         })
     },
     'GetRandomComic': function () {
+        // ToDo: change this to pull the most recent comic number
+        this.attributes['current_index'] = 159;
+
         this.emit(':tell', 'This is our random comic function');
     },
     'GetExplanation': function () {
         this.emit(':tell', 'This is our explanation function');
     },
     'GetNextComic': function () {
+        // ToDo: Add error checking for indexing off list
+        // ToDo: Add error checking for unset session variables
+        var next_index = this.attributes['current_index'] + 1;
+
+        // ToDo write code to scrape comic
         this.emit(':tell', 'This is our next comic function');
     },
     'GetPreviousComic': function () {
+        // ToDo: Add error checking for indexing off list
+        // ToDo: Add error checking for unset session variables
+        var previous_index = this.attributes['current_index'] - 1;
+
+        // ToDo write code to scrape comic
         this.emit(':tell', 'This is our previous comic function');
     },
     'AMAZON.HelpIntent': function () {
