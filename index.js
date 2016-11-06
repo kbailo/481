@@ -57,19 +57,56 @@ var handlers = {
         // ToDo: Add error checking for indexing off list
         // ToDo: Add error checking for unset session variables
         var next_index = this.attributes['current_index'] + 1;
+        var func_obj = this;
 
         // ToDo write code to scrape comic
-        // ToDo upon success, update current_index variable
-        this.emit(':tell', 'This is our next comic function');
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + next_index.toString();
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.attributes['current_index'] = next_index;
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetPreviousComic': function () {
         // ToDo: Add error checking for indexing off list
         // ToDo: Add error checking for unset session variables
         var previous_index = this.attributes['current_index'] - 1;
+        var func_obj = this;
 
         // ToDo write code to scrape comic
-        // ToDo upon success, update current_index variable
-        this.emit(':tell', 'This is our previous comic function');
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + previous_index.toString();
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.attributes['current_index'] = previous_index;
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
+        
     },
     'AMAZON.HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
