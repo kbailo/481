@@ -56,10 +56,13 @@ var handlers = {
     'GetNextComic': function () {
         // ToDo: Add error checking for indexing off list
         // ToDo: Add error checking for unset session variables
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
         var next_index = this.attributes['current_index'] + 1;
         var func_obj = this;
 
-        // ToDo write code to scrape comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + next_index.toString();
         request(url, function(error, response, body) {
             if(!error){
@@ -83,10 +86,13 @@ var handlers = {
     'GetPreviousComic': function () {
         // ToDo: Add error checking for indexing off list
         // ToDo: Add error checking for unset session variables
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
         var previous_index = this.attributes['current_index'] - 1;
         var func_obj = this;
 
-        // ToDo write code to scrape comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + previous_index.toString();
         request(url, function(error, response, body) {
             if(!error){
