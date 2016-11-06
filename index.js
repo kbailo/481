@@ -55,7 +55,6 @@ var handlers = {
     },
     'GetNextComic': function () {
         // ToDo: Add error checking for indexing off list
-        // ToDo: Add error checking for unset session variables
         if (!('current_index' in this.attributes)){
             this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
             return;
@@ -85,7 +84,6 @@ var handlers = {
     },
     'GetPreviousComic': function () {
         // ToDo: Add error checking for indexing off list
-        // ToDo: Add error checking for unset session variables
         if (!('current_index' in this.attributes)){
             this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
             return;
