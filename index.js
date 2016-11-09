@@ -149,8 +149,7 @@ var handlers = {
         this.emit(':tell', 'Beret Guy is an optimist, and sometimes a naive one (although he is rarely a victim in the strip). He is a funny and sometimes even borderline cute character, and when he is in the strip is usually the basis of that strips joke. He enjoys philosophizing, often taking the role of the existentialist. He has a very surreal side to him, often thinking about or being involved in bizarre situations. He also is shown to take things far too literally, sometimes making things surreal.');
     },
     'GetCueball': function () {
-        this.emit(':tell', 'Cueball is a stick figure character in xkcd, distinguished from other characters by having no distinguishing features (including no hair or hat). The name is unofficial, and pretty much only used on explain xkcd and TV Tropes.
-            Like other xkcd characters, Cueball does not necessarily represent the same character from comic to comic, and is not necessarily a unique character in any given strip. Instead, he represents a generic everyman. In several comics, there are multiple such stick figures, any of whom could be called Cueball.');
+        this.emit(':tell', 'Cueball is a stick figure character in xkcd, distinguished from other characters by having no distinguishing features (including no hair or hat). The name is unofficial, and pretty much only used on explain xkcd and TV Tropes. Like other xkcd characters, Cueball does not necessarily represent the same character from comic to comic, and is not necessarily a unique character in any given strip. Instead, he represents a generic everyman. In several comics, there are multiple such stick figures, any of whom could be called Cueball.');
     },
     'GetHairy': function () {
         this.emit(':tell', 'Hairy is a stick figure character in xkcd. The name is unofficial, used by xkcd explainers to describe male characters with hair and no other distinguishing features.');
@@ -166,10 +165,7 @@ var handlers = {
     },
     'AMAZON.HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
-        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d 
-            comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation
-            by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may 
-            do so by saying mouse over text";
+        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanationby saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
         this.emit(':tell', speechOutput, reprompt);
     },
