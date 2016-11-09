@@ -53,7 +53,7 @@ var handlers = {
         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
         var num_new_comics = Math.floor(diffDays * 3 / 7);
         var total_comics = num_new_comics + 1754 - 2;
-        var random = (math.random() % total_comics);
+        var random = (Math.random() % total_comics);
 
         // url of the most a random xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
