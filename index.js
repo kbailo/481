@@ -105,7 +105,7 @@ var handlers = {
     'GetPonytail': function () {
         this.emit(':tell', 'Ponytail is a stick figure character in xkcd, and the second most used female character, although she is far less used than Megan. She is distinguished from other characters by her blonde hair which is set up in a ponytail. Like Cueball and Megan, she does not necessarily represent the same character from comic to comic.');
     },
-    'GetWhiteHate': function () {
+    'GetWhiteHat': function () {
         this.emit(':tell', 'White Hat is a stick figure character in xkcd. He is distinguished by his eponymous white hat which appears to be in the shape and style of a boater. His appearance is identical to that of Black Hat other than the color of their respective hats. Unlike Black Hat, however, does not necessarily represent the same character in each appearance.');
     },
     'AMAZON.HelpIntent': function () {
