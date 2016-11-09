@@ -17,6 +17,15 @@ exports.handler = function(event, context, callback) {
     alexa.execute();
 };
 
+var num_comics = function() {
+    var date1 = new Date();
+    var date2 = new Date("11/4/2016");
+    var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+    var num_new_comics = Math.floor(diffDays * 3 / 7);
+    return num_new_comics + 1754 - 2;
+};
+
 var handlers = {
     'GetMostRecentComic': function () {
         // ToDo: change this to pull the most recent comic number
@@ -46,14 +55,10 @@ var handlers = {
     },
     'GetRandomComic': function () {
         var func_obj = this;
-        
-        var date1 = new Date();
-        var date2 = new Date("11/4/2016");
-        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-        var num_new_comics = Math.floor(diffDays * 3 / 7);
-        var total_comics = num_new_comics + 1754 - 2;
+
+        var total_comics = num_comics();
         var random = (Math.random() % total_comics);
+        this.attributes['current_index'] = random;
 
         // url of the most a random xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
@@ -84,9 +89,13 @@ var handlers = {
         this.emit(':tell', 'This is our title text function');
     },
     'GetNextComic': function () {
-        // ToDo: Add error checking for indexing off list
+
         if (!('current_index' in this.attributes)){
             this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
+        if(this.attributes['current_index'] >= num_comics()){
+            this.emit(':tell', "We're sorry, it looks like there's no next comic.");
             return;
         }
         var next_index = this.attributes['current_index'] + 1;
@@ -113,9 +122,12 @@ var handlers = {
         })
     },
     'GetPreviousComic': function () {
-        // ToDo: Add error checking for indexing off list
         if (!('current_index' in this.attributes)){
             this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
+        if(this.attributes['current_index'] == 1){
+            this.emit(':tell', "We're sorry, it looks like there's no previous comic.");
             return;
         }
         var previous_index = this.attributes['current_index'] - 1;
