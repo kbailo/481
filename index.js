@@ -45,12 +45,6 @@ var handlers = {
         })
     },
     'GetRandomComic': function () {
-<<<<<<< HEAD
-        // ToDo: change this to pull the most recent comic number
-        this.attributes['current_index'] = 159;
-
-        this.emit(':tell', 'This is our random comic function');
-=======
         var func_obj = this;
         
         var date1 = new Date();
@@ -82,7 +76,6 @@ var handlers = {
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
->>>>>>> master
     },
     'GetExplanation': function () {
         this.emit(':tell', 'This is our explanation function');
