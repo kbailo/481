@@ -44,7 +44,7 @@ var handlers = {
     'GetRandomComic': function () {
         var func_obj = this;
         
-        var date1 = new Date("11/10/2016");
+        var date1 = new Date();
         var date2 = new Date("11/4/2016");
         var timeDiff = Math.abs(date2.getTime() - date1.getTime());
         var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
