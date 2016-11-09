@@ -19,6 +19,9 @@ exports.handler = function(event, context, callback) {
 
 var handlers = {
     'GetMostRecentComic': function () {
+        // ToDo: change this to pull the most recent comic number
+        this.attributes['current_index'] = 1755;
+
         var func_obj = this;
         // url of the most recent xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
@@ -81,10 +84,63 @@ var handlers = {
         this.emit(':tell', 'This is our title text function');
     },
     'GetNextComic': function () {
-        this.emit(':tell', 'This is our next comic function');
+        // ToDo: Add error checking for indexing off list
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
+        var next_index = this.attributes['current_index'] + 1;
+        var func_obj = this;
+
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + next_index.toString();
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.attributes['current_index'] = next_index;
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetPreviousComic': function () {
-        this.emit(':tell', 'This is our previous comic function');
+        // ToDo: Add error checking for indexing off list
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
+        var previous_index = this.attributes['current_index'] - 1;
+        var func_obj = this;
+
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + previous_index.toString();
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.attributes['current_index'] = previous_index;
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
+        
     },
     'GetBlackHat': function () {
         this.emit(':tell', 'Black Hat is a stick figure character in xkcd. He is distinguished by his eponymous black hat. In his earliest appearances, Black Hat wore a taller top-hat style hat, that quickly evolved to have the current shape and style of a pork pie hat. Judging by 1139: Rubber and Glue, he has worn the hat since he was a child. That strip also gave him the nickname Hatboy. Black Hat seems to have short hair, as shown in Journal series, 412: Startled and 1401: New. He is revealed to be a blogger in the Secretary series, when Cory Doctorow referred to him as one of our own. Unlike many other characters in xkcd, he seems to represent the same character in every appearance.');
