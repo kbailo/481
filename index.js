@@ -42,7 +42,37 @@ var handlers = {
         })
     },
     'GetRandomComic': function () {
-        this.emit(':tell', 'This is our random comic function');
+        var func_obj = this;
+        
+        var date1 = new Date("11/10/2016");
+        var date2 = new Date("11/4/2016");
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+        var num_new_comics = Math.floor(diffDays * 3 / 7);
+        var total_comics = num_new_comics + 1754 - 2;
+        var random = (math.random() % total_comics);
+
+        // url of the most a random xkcd comic
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
+
+        // Make a request in order to scrape the most recent comics transcript
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetExplanation': function () {
         this.emit(':tell', 'This is our explanation function');
