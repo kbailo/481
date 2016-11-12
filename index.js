@@ -31,7 +31,6 @@ var handlers = {
                 var $ = cheerio.load(body);
                 var transcript = "";
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -64,7 +63,27 @@ var handlers = {
                 var $ = cheerio.load(body);
                 var transcript = "";
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
+    },
+    'GetSpecificComic': function(comic_number) {
+        this.attribute['current_index'] = comic_number;
+        var func_obj = this;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -78,10 +97,44 @@ var handlers = {
         })
     },
     'GetExplanation': function () {
-        this.emit(':tell', 'This is our explanation function');
+        var func_obj = this;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var explanation = "";
+                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not("#mw-content-text > div:nth-child(3) > table:nth-child(4)").text();
+                // Newlines cause Alexa to stop, make sure to romove them
+                explanation = explanation.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                explanation = explanation.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', explanation);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetTitleText': function () {
-        this.emit(':tell', 'This is our title text function');
+         var func_obj = this;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var title = "";
+                title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                title = title.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                title = title.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', title);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetNextComic': function () {
         // ToDo: Add error checking for indexing off list
@@ -98,7 +151,6 @@ var handlers = {
                 var $ = cheerio.load(body);
                 var transcript = "";
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -127,7 +179,6 @@ var handlers = {
                 var $ = cheerio.load(body);
                 var transcript = "";
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
