@@ -2,12 +2,20 @@
 var Alexa = require('alexa-sdk');
 var cheerio = require("cheerio");
 var request = require('request');
+var mysql = require('mysql');
 
 var SKILL_NAME = 'X K C D';
 
 // ToDo: Find our app id (skill id?) and included it if needed
 // var APP_ID = "";
 
+var conn = mysql.createConnection({
+  host      :  'xkcd-alexa-favorites.co3uedzbghxg.us-east-1.rds.amazonaws.com:3306' ,  // RDS endpoint
+  user      :  'mrjdunaj' ,  // MySQL username
+  password  :  'xkcdonalexa' ,  // MySQL password
+  database  :  'XKCD_favorites'
+});
+conn.connect();
 
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
@@ -17,11 +25,13 @@ exports.handler = function(event, context, callback) {
     alexa.execute();
 };
 
+
+
 var num_comics = function() {
     var date1 = new Date();
     var date2 = new Date("11/4/2016");
     var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
     var num_new_comics = Math.floor(diffDays * 3 / 7);
     return num_new_comics + 1754 - 2;
 };
@@ -152,7 +162,7 @@ var handlers = {
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
-        
+
     },
     'GetBlackHat': function () {
         this.emit(':tell', 'Black Hat is a stick figure character in xkcd. He is distinguished by his eponymous black hat. In his earliest appearances, Black Hat wore a taller top-hat style hat, that quickly evolved to have the current shape and style of a pork pie hat. Judging by 1139: Rubber and Glue, he has worn the hat since he was a child. That strip also gave him the nickname Hatboy. Black Hat seems to have short hair, as shown in Journal series, 412: Startled and 1401: New. He is revealed to be a blogger in the Secretary series, when Cory Doctorow referred to him as one of our own. Unlike many other characters in xkcd, he seems to represent the same character in every appearance.');
@@ -186,5 +196,50 @@ var handlers = {
     },
     'AMAZON.StopIntent': function () {
         this.emit(':tell', 'Stopping, Goodbye!');
+    },
+    'SaveMostRecent': function () {
+      var func_obj = this;
+      if (!this.attributes['current_index']){
+        this.emit(':tell', 'Whops, there was an error with current ID')
+      }
+      else {
+        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (`' + this.user.userId + '`, `' + this.attributes['current_index'] + '`);', function (err) {
+          if(err){
+            console.log('ERR:', err);
+          }
+        });
+      }
+      conn.end();
+    },
+    'ReadFavoriteComic': function () {
+      var func_obj = this;
+      conn.query('SELECT comicId FROM favorites WHERE alexaId = `' + this.user.userId + '`;', function(err, rows) {
+        if(err) {
+          console.log('ERR:', err);
+          func_obj.emit(':tell', err);
+        }
+        var comicId = rows[Math.floor(Math.random()*rows.length)];
+
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + comicId.toString();
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                var title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.attributes['current_index'] = previous_index;
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        });
+      });
+      conn.end();
     }
 };
