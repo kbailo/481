@@ -57,7 +57,7 @@ var handlers = {
         var func_obj = this;
 
         var total_comics = num_comics();
-        var random = (Math.random() % total_comics);
+        var random = Math.floor(Math.random() * total_comics);
         this.attributes['current_index'] = random;
 
         // url of the most a random xkcd comic
