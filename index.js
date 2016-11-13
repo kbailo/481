@@ -53,8 +53,11 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
+                var comic_num = 0;
+                comic_num = $('#mw-content-text > center > p > a:nth-child(3) > b').text();
+		            comic_num++;
+                this.attributes['current_index'] = comic_num;
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
