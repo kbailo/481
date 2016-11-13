@@ -7,7 +7,19 @@
       "intent": "GetRandomComic"
     },
     {
+      "intent": "GetSpecificComic",
+        "slots": [
+          {
+            "name": "comic_number",
+            "type": "AMAZON.FOUR_DIGIT_NUMBER"
+          },
+        ]
+    }
+    {
       "intent": "GetExplanation"
+    },
+    {
+      "intent": "GetTitleText"
     },
     {
       "intent": "GetNextComic"

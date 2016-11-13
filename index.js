@@ -49,7 +49,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -67,7 +67,7 @@ var handlers = {
         var func_obj = this;
 
         var total_comics = num_comics();
-        var random = (Math.random() % total_comics);
+        var random = Math.floor(Math.random() * total_comics);
         this.attributes['current_index'] = random;
 
         // url of the most a random xkcd comic
@@ -78,7 +78,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -92,11 +92,71 @@ var handlers = {
             }
         })
     },
+    'GetSpecificComic': function(comic_number) {
+        var func_obj = this;
+        if(comic_number > num_comics()){
+            func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
+            return;
+        }
+        this.attribute['current_index'] = comic_number;
+        var func_obj = this;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var transcript = "";
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
+                // Newlines cause Alexa to stop, make sure to romove them
+                transcript = transcript.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                transcript = transcript.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', transcript);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
+    },
     'GetExplanation': function () {
-        this.emit(':tell', 'This is our explanation function');
+        var func_obj = this;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var explanation = "";
+                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not("#mw-content-text > div:nth-child(3) > table:nth-child(4)").text();
+                // Newlines cause Alexa to stop, make sure to romove them
+                explanation = explanation.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                explanation = explanation.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', explanation);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetTitleText': function () {
-        this.emit(':tell', 'This is our title text function');
+         var func_obj = this;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        request(url, function(error, response, body) {
+            if(!error){
+                var $ = cheerio.load(body);
+                var title = "";
+                title = $("span[style='color:grey']").parent().text().substring(12);
+                // Newlines cause Alexa to stop, make sure to romove them
+                title = title.replace(/\n/g, " ");
+                // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                title = title.replace(/:/g, " says");
+                // ToDo: Should we send the title as well?
+                func_obj.emit(':tell', title);
+            }
+            else{
+                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+            }
+        })
     },
     'GetNextComic': function () {
 
@@ -116,7 +176,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -148,7 +208,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -187,7 +247,12 @@ var handlers = {
     },
     'AMAZON.HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
-        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanationby saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
+        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
+        var reprompt = "What can I help you with?";
+        this.emit(':tell', speechOutput, reprompt);
+    },
+    'AMAZON.LaunchRequest': function(){
+        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
         this.emit(':tell', speechOutput, reprompt);
     },
