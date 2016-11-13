@@ -237,12 +237,12 @@ var handlers = {
     },
     'AMAZON.HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
-        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanationby saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
+        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
         this.emit(':tell', speechOutput, reprompt);
     },
     'AMAZON.LaunchRequest': function(){
-        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanationby saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
+        var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
         this.emit(':tell', speechOutput, reprompt);
     },
