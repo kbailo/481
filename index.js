@@ -39,7 +39,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -68,7 +68,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -95,7 +95,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -166,7 +166,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -198,7 +198,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("table").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
                 var title = $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
