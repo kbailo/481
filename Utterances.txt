@@ -14,6 +14,15 @@ GetExplanation why is that funny
 GetExplanation explain it to me
 GetExplanation explain that to me
 GetExplanation I'm confused
+GetTitleText get the mouse over text
+GetTitleText get the title text
+GetTitleText give me the mouse over text
+GetTitleText mouse over text
+GetTitleText title text
+GetSpecificComic go to comic {comic_number}
+GetSpecificComic give me comic {comic_number}
+GetSpecificComic get comic {comic_number}
+GetSpecificComic I want comic {comic_number}
 GetNextComic next comic
 GetNextComic read me the next comic
 GetNextComic what is the next comic
