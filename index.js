@@ -6,11 +6,13 @@ var mysql = require('mysql');
 
 var SKILL_NAME = 'X K C D';
 
+var userIdLocator = null;
+
 // ToDo: Find our app id (skill id?) and included it if needed
 // var APP_ID = "";
 
 var conn = mysql.createConnection({
-  host      :  'xkcd-alexa-favorites.co3uedzbghxg.us-east-1.rds.amazonaws.com:3306' ,  // RDS endpoint
+  host      :  'xkcd-alexa-favorites.co3uedzbghxg.us-east-1.rds.amazonaws.com' ,  // RDS endpoint
   user      :  'mrjdunaj' ,  // MySQL username
   password  :  'xkcdonalexa' ,  // MySQL password
   database  :  'XKCD_favorites'
@@ -19,6 +21,9 @@ conn.connect();
 
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
+    console.log('event', event);
+    userIdLocator = event.session.user.userId;
+    console.log('context', context);
     // TODO: uncomment if needed
     // alexa.appId = APP_ID;
     alexa.registerHandlers(handlers);
@@ -40,7 +45,6 @@ var handlers = {
     'GetMostRecentComic': function () {
         // ToDo: change this to pull the most recent comic number
         this.attributes['current_index'] = 1755;
-
         var func_obj = this;
         // url of the most recent xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
@@ -268,7 +272,9 @@ var handlers = {
         this.emit(':tell', 'Whops, there was an error with current ID')
       }
       else {
-        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (`' + this.user.userId + '`, `' + this.attributes['current_index'] + '`);', function (err) {
+        console.log('userId', userIdLocator);
+        console.log('comicId', func_obj.attributes['current_index'])
+        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (`' + userIdLocator + '`, ' + func_obj.attributes['current_index'] + ');', function (err) {
           if(err){
             console.log('ERR:', err);
           }
@@ -278,7 +284,7 @@ var handlers = {
     },
     'ReadFavoriteComic': function () {
       var func_obj = this;
-      conn.query('SELECT comicId FROM favorites WHERE alexaId = `' + this.user.userId + '`;', function(err, rows) {
+      conn.query('SELECT comicId FROM favorites WHERE alexaId = `' + userIdLocator + '`;', function(err, rows) {
         if(err) {
           console.log('ERR:', err);
           func_obj.emit(':tell', err);
