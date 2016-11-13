@@ -19,6 +19,9 @@
       "intent": "GetExplanation"
     },
     {
+      "intent": "GetTitleText"
+    },
+    {
       "intent": "GetNextComic"
     },
     {
