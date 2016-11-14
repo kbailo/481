@@ -272,22 +272,23 @@ var handlers = {
     'SaveMostRecent': function () {
       var func_obj = this;
       if (!this.attributes['current_index']){
-        this.emit(':tell', 'Whops, there was an error with current ID')
+        this.emit(':tell', 'Whops, there was an error with current ID');
+        return;
       }
       else {
         console.log('userId', userIdLocator);
-        console.log('comicId', func_obj.attributes['current_index'])
-        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (`' + userIdLocator + '`, ' + func_obj.attributes['current_index'] + ');', function (err) {
+        console.log('comicId', func_obj.attributes['current_index']);
+        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (\'' + userIdLocator + '\', ' + func_obj.attributes['current_index'] + ');', function (err) {
           if(err){
             console.log('ERR:', err);
           }
         });
       }
-      conn.end();
+      this.emit(':tell', 'This comic has been saved');
     },
     'ReadFavoriteComic': function () {
       var func_obj = this;
-      conn.query('SELECT comicId FROM favorites WHERE alexaId = `' + userIdLocator + '`;', function(err, rows) {
+      conn.query('SELECT comicId FROM favorites WHERE alexaId = \'' + userIdLocator + '\';', function(err, rows) {
         if(err) {
           console.log('ERR:', err);
           func_obj.emit(':tell', err);
@@ -306,7 +307,7 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.attributes['current_index'] = previous_index;
+                func_obj.attributes['current_index'] = comicId;
                 func_obj.emit(':tell', transcript);
             }
             else{
@@ -314,6 +315,5 @@ var handlers = {
             }
         });
       });
-      conn.end();
     }
 };
