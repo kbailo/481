@@ -55,9 +55,9 @@ var handlers = {
                 var transcript = "";
                 var comic_num = 0;
                 comic_num = $('#mw-content-text > center > p > a:nth-child(3) > b').text();
-		            comic_num++;
+		comic_num++;
                 this.attributes['current_index'] = comic_num;
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
+                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -85,8 +85,12 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
+		if($('h2:has(#Trivia)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else{
+		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+		}
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -112,7 +116,12 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
+                if($('h2:has(#Trivia)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else{
+		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+		}
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -132,7 +141,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var explanation = "";
-                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not("#mw-content-text > div:nth-child(3) > table:nth-child(4)").text();
+                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 explanation = explanation.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -146,7 +155,7 @@ var handlers = {
         })
     },
     'GetTitleText': function () {
-         var func_obj = this;
+        var func_obj = this;
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
         request(url, function(error, response, body) {
             if(!error){
@@ -183,8 +192,12 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
+                if($('h2:has(#Trivia)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else{
+		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+		}
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -215,8 +228,12 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not("#mw-content-text > table:nth-child(7)").text();
-                var title = $("span[style='color:grey']").parent().text().substring(12);
+                if($('h2:has(#Trivia)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else{
+		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+		}
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
