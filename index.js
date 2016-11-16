@@ -55,8 +55,8 @@ var handlers = {
                 var transcript = "";
                 var comic_num = 0;
                 comic_num = $('#mw-content-text > center > p > a:nth-child(3) > b').text();
-		comic_num++;
-                this.attributes['current_index'] = comic_num;
+                comic_num++;
+                func_obj.attributes['current_index'] = comic_num;
                 transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -75,7 +75,7 @@ var handlers = {
 
         var total_comics = num_comics();
         var random = Math.floor(Math.random() * total_comics);
-        this.attributes['current_index'] = random;
+        func_obj.attributes['current_index'] = random;
 
         // url of the most a random xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
@@ -110,7 +110,7 @@ var handlers = {
             func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
             return;
         }
-        this.attribute['current_index'] = comic_number;
+        func_obj.attribute['current_index'] = comic_number;
         var func_obj = this;
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
         request(url, function(error, response, body) {
