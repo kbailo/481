@@ -7,6 +7,7 @@ var mysql = require('mysql');
 var SKILL_NAME = 'X K C D';
 
 var userIdLocator = null;
+var event_obj = null;
 
 // ToDo: Find our app id (skill id?) and included it if needed
 // var APP_ID = "";
@@ -22,6 +23,7 @@ conn.connect();
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
     console.log('event', event);
+    event_obj = event;
     userIdLocator = event.session.user.userId;
     console.log('context', context);
     // TODO: uncomment if needed
@@ -104,15 +106,20 @@ var handlers = {
             }
         })
     },
-    'GetSpecificComic': function(comic_number) {
+    'GetSpecificComic': function() {
         var func_obj = this;
+        console.log('event_obj', event_obj);
+        console.log('request', event_obj.request);
+        console.log('intent', event_obj.request.intent);
+        console.log('slots', event_obj.request.intent.slots);
+        console.log('comic_number', event_obj.request.intent.slots.comic_number);
+        var comic_number = parseInt(event_obj.request.intent.slots.comic_number.value);
         if(comic_number > num_comics()){
             func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
             return;
         }
-        func_obj.attribute['current_index'] = comic_number;
-        var func_obj = this;
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        func_obj.attributes['current_index'] = comic_number;
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + func_obj.attributes['current_index'];
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
@@ -138,7 +145,7 @@ var handlers = {
     },
     'GetExplanation': function () {
         var func_obj = this;
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_index'];
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
@@ -158,7 +165,7 @@ var handlers = {
     },
     'GetTitleText': function () {
         var func_obj = this;
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attribute['current_index'];
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_index'];
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
