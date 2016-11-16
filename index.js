@@ -114,12 +114,7 @@ var handlers = {
         console.log('slots', event_obj.request.intent.slots);
         console.log('comic_number', event_obj.request.intent.slots.comic_number);
         var comic_number = parseInt(event_obj.request.intent.slots.comic_number.value);
-        if(comic_number > num_comics()){
-            func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
-            return;
-        }
-        func_obj.attributes['current_index'] = comic_number;
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + func_obj.attributes['current_index'];
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + comic_number;
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
@@ -135,6 +130,7 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
+		func_obj.attributes['current_index'] = comic_number;
                 // ToDo: Should we send the title as well?
                 func_obj.emit(':tell', transcript);
             }
