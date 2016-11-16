@@ -114,6 +114,10 @@ var handlers = {
         console.log('slots', event_obj.request.intent.slots);
         console.log('comic_number', event_obj.request.intent.slots.comic_number);
         var comic_number = parseInt(event_obj.request.intent.slots.comic_number.value);
+	if(comic_number > num_comics()){
+              func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
+              return;
+        }
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + comic_number;
         request(url, function(error, response, body) {
             if(!error){
