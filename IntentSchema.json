@@ -11,7 +11,7 @@
         "slots": [
           {
             "name": "comic_number",
-            "type": "AMAZON.FOUR_DIGIT_NUMBER"
+            "type": "AMAZON.NUMBER"
           },
         ]
     }
