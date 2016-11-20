@@ -358,6 +358,7 @@ var handlers = {
           func_obj.emit(':tell', err);
         }
         var comicId = rows[Math.floor(Math.random()*rows.length)];
+        var comicId = comicId.comicId;
 
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + comicId.toString();
         request(url, function(error, response, body) {
