@@ -1,0 +1,37 @@
+GetMostRecentComic:
+	-Transcript not posted yet
+
+GetRandomComic:
+	-Don't index off of list
+	-If one comic doesn't work, try another.
+
+GetSpecificComic:
+	-Comic doesn't exist
+
+GetExplanation:
+	-There is no current comic yet
+	-There is no explanation
+
+GetTitleText:
+	-?
+
+GetNextComic:
+	-On most recent comic (don't change current_index until successful read)
+
+GetPreviousComic:
+	-On oldest comic (don't change current_index until successful read)
+
+Get<character_name>:
+	-Simply test
+
+HelpIntent:
+	-Test if it cover everything
+
+Launch Intent:
+	-?
+
+SaveMostRecent:
+	-There is no current comic yet
+
+ReadFavoriteComic:
+	-?
