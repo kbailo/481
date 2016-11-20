@@ -59,7 +59,15 @@ var handlers = {
                 comic_num = $('#mw-content-text > center > p > a:nth-child(3) > b').text();
                 comic_num++;
                 func_obj.attributes['current_index'] = comic_num;
-                transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+		if($('h2:has(#Citations)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else if($('h2:has(#Trivia)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else{
+	           transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+		}
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -89,6 +97,9 @@ var handlers = {
                 var transcript = "";
 		if($('h2:has(#Trivia)').length){
 		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else if($('h2:has(#Citations)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
 	        }
 		else{
 		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
@@ -125,6 +136,9 @@ var handlers = {
                 var transcript = "";
                 if($('h2:has(#Trivia)').length){
 		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		else if($('h2:has(#Citations)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
 	        }
 		else{
 		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
@@ -204,6 +218,9 @@ var handlers = {
                 if($('h2:has(#Trivia)').length){
 		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
 	        }
+		else if($('h2:has(#Citations)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
 		else{
 		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
 		   transcript = transcript.substr(0,transcript.length-67);
@@ -240,6 +257,9 @@ var handlers = {
                 var transcript = "";
                 if($('h2:has(#Trivia)').length){
 		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		if($('h2:has(#Citations)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
 	        }
 		else{
 		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
@@ -331,6 +351,9 @@ var handlers = {
                 var transcript = "";
                 if($('h2:has(#Trivia)').length){
 		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+	        }
+		if($('h2:has(#Citations)').length){
+		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
 	        }
 		else{
 		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
