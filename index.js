@@ -193,6 +193,10 @@ var handlers = {
         })
     },
     'GetExplanation': function () {
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
         var func_obj = this;
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_index'];
         request(url, function(error, response, body) {
@@ -213,6 +217,10 @@ var handlers = {
         })
     },
     'GetTitleText': function () {
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
         var func_obj = this;
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_index'];
         request(url, function(error, response, body) {
@@ -360,6 +368,10 @@ var handlers = {
         this.emit(':tell', 'Stopping, Goodbye!');
     },
     'SaveMostRecent': function () {
+        if (!('current_index' in this.attributes)){
+            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            return;
+        }
       var func_obj = this;
       if (!this.attributes['current_index']){
         this.emit(':tell', 'Whops, there was an error with current ID');
