@@ -53,7 +53,7 @@ var num_comics = function() {
     var timeDiff = Math.abs(date2.getTime() - date1.getTime());
     var difWeeks = Math.floor(timeDiff / (1000 * 3600 * 168));
     var day = date1.getDay();
-    var num_new_comics = 1761 + (difWeeks * 3);
+    var num_new_comics = 1760 + (difWeeks * 3);
     if(day == 0){
         return num_new_comics;
     }
