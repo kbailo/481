@@ -35,12 +35,38 @@ exports.handler = function(event, context, callback) {
 
 
 var num_comics = function() {
+    // var url = 'http://xkcd.com/info.0.json';
+    // var result = 1760;
+    // request(url, function(error, response, body) {
+    //         if(!error){
+    //             var resp = JSON.parse(body);
+    //             result = resp.num;
+    //             console.log('res', result);
+    //             return result;
+    //         }
+    //         else{
+    //             return 1759;
+    //         }
+    //     });
     var date1 = new Date();
-    var date2 = new Date("11/4/2016");
+    var date2 = new Date("11/19/2016");
     var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    var num_new_comics = Math.floor(diffDays * 3 / 7);
-    return num_new_comics + 1754 - 2;
+    var difWeeks = Math.floor(timeDiff / (1000 * 3600 * 168));
+    var day = date1.getDay();
+    var num_new_comics = 1761 + (difWeeks * 3);
+    if(day == 0){
+        return num_new_comics;
+    }
+    else if(day < 3){
+        return (num_new_comics + 1);
+    }
+    else if(day < 5){
+        return (num_new_comics + 2);
+    }
+    else{
+        return (num_new_comics + 3);
+    }
+    
 };
 
 var handlers = {
