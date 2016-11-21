@@ -157,7 +157,7 @@ var handlers = {
         console.log('slots', event_obj.request.intent.slots);
         console.log('comic_number', event_obj.request.intent.slots.comic_number);
         var comic_number = parseInt(event_obj.request.intent.slots.comic_number.value);
-	if(comic_number > num_comics()){
+	if(comic_number > num_comics() || comic_number < 1){
               func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
               return;
         }
