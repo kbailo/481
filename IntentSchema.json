@@ -28,13 +28,16 @@
       "intent": "GetPreviousComic"
     },
     {
-      "intent": "AMAZON.HelpIntent"
+      "intent": "HelpIntent"
     },
     {
-      "intent": "AMAZON.StopIntent"
+      "intent": "StopIntent"
     },
     {
-      "intent": "AMAZON.CancelIntent"
+      "intent": "CancelIntent"
+    },
+    {
+      "intent": "LaunchRequest"
     }
   ]
 }

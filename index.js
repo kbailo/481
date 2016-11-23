@@ -350,21 +350,21 @@ var handlers = {
     'GetWhiteHat': function () {
         this.emit(':tell', 'White Hat is a stick figure character in xkcd. He is distinguished by his eponymous white hat which appears to be in the shape and style of a boater. His appearance is identical to that of Black Hat other than the color of their respective hats. Unlike Black Hat, however, does not necessarily represent the same character in each appearance.');
     },
-    'AMAZON.HelpIntent': function () {
+    'HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
         var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
         this.emit(':tell', speechOutput, reprompt);
     },
-    'AMAZON.LaunchRequest': function(){
+    'LaunchRequest': function(){
         var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
         this.emit(':tell', speechOutput, reprompt);
     },
-    'AMAZON.CancelIntent': function () {
+    'CancelIntent': function () {
         this.emit(':tell', 'Canceling, Goodbye!');
     },
-    'AMAZON.StopIntent': function () {
+    'StopIntent': function () {
         this.emit(':tell', 'Stopping, Goodbye!');
     },
     'SaveMostRecent': function () {
