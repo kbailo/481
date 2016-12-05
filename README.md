@@ -40,3 +40,14 @@ You must upload an updated zip file containing index.js and the node_modules fol
  * Who are the Characters intent - Kara
  * Intro to XKCD intent - Kara
  * Publish to Amazon App Store - Kara
+
+### Omega
+ * Tell -> Ask -  Kara
+ * Database (Delte favorite, closing connections) - Michal
+ * Debug webscraper code - Brian
+ * Repeat last prompt - Matt
+ * Complete Utterances + Schema - Matt
+ * Launch -> Previous Bug - Matt
+ * Why does Lambda shut down - Everyone
+ * Use of SSML tags - Brian
+ * Correct max_comic function - Matt
