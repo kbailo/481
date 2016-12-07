@@ -58,13 +58,13 @@
       "intent": "LaunchRequest"
     },
     {
-      "intent": "HelpIntent"
+      "intent": "AMAZON.HelpIntent"
     },
     {
-      "intent": "StopIntent"
+      "intent": "AMAZON.StopIntent"
     },
     {
-      "intent": "CancelIntent"
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }
