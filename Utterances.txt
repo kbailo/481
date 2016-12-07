@@ -32,3 +32,30 @@ GetPreviousComic previous comic
 GetPreviousComic older comic
 GetPreviousComic one back
 GetPreviousComic previous x k c d
+SaveMostRecent save this comic
+SaveMostRecent I liked that one
+ReadFavoriteComic read me a favorite comic
+ReadFavoriteComic read me my favorite comic
+ReadFavoriteComic read me one of my favorite comics
+GetBlackHat who is black hat
+GetBlackHat blackhat
+GetCueball who is cueball
+GetCueball cueball
+GetCueball who is q ball
+GetCueball q ball
+GetBeretGuy who is beret guy
+GetBeretGuy beret guy
+GetHairy who is hairy
+GetHairy harry
+GetHairy who is hairy
+GetHairy harry
+GetMegan who is Megan
+GetMegan who is Meghan
+GetMegan Megan
+GetMegan Meghan
+GetPonytail who is ponytail
+GetPonytail ponytail
+GetPonytail who is pony tail
+GetPonytail pony tail
+GetPonytail who is pony tale
+GetPonytail pony tale

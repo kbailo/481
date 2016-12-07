@@ -7,25 +7,55 @@
       "intent": "GetRandomComic"
     },
     {
-      "intent": "GetSpecificComic",
-        "slots": [
-          {
-            "name": "comic_number",
-            "type": "AMAZON.NUMBER"
-          },
-        ]
-    }
-    {
       "intent": "GetExplanation"
-    },
-    {
-      "intent": "GetTitleText"
     },
     {
       "intent": "GetNextComic"
     },
     {
+      "intent": "GetTitleText"
+    },
+    {
       "intent": "GetPreviousComic"
+    },
+    {
+      "intent": "GetBlackHat"
+    },
+    {
+      "intent": "GetBeretGuy"
+    },
+    {
+      "intent": "GetCueball"
+    },
+    {
+      "intent": "GetHairy"
+    },
+    {
+      "intent": "GetMegan"
+    },
+    {
+      "intent": "GetPonytail"
+    },
+    {
+      "intent": "SaveMostRecent"
+    },
+    {
+      "intent": "ReadFavoriteComic"
+    },
+    {
+      "intent": "GetWhiteHat"
+    },
+    {
+      "intent": "GetSpecificComic",
+      "slots": [
+        {
+          "name": "comic_number",
+          "type": "AMAZON.FOUR_DIGIT_NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "LaunchRequest"
     },
     {
       "intent": "HelpIntent"
@@ -35,9 +65,6 @@
     },
     {
       "intent": "CancelIntent"
-    },
-    {
-      "intent": "LaunchRequest"
     }
   ]
 }
