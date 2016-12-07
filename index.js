@@ -35,19 +35,6 @@ exports.handler = function(event, context, callback) {
 
 
 var num_comics = function() {
-    // var url = 'http://xkcd.com/info.0.json';
-    // var result = 1760;
-    // request(url, function(error, response, body) {
-    //         if(!error){
-    //             var resp = JSON.parse(body);
-    //             result = resp.num;
-    //             console.log('res', result);
-    //             return result;
-    //         }
-    //         else{
-    //             return 1759;
-    //         }
-    //     });
     var date1 = new Date();
     var date2 = new Date("11/19/2016");
     date1.setHours(date1.getHours() - 15);
@@ -105,7 +92,9 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.emit(':tell', transcript);
+
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', transcript, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -145,7 +134,8 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.emit(':tell', transcript);
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', transcript, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -188,7 +178,8 @@ var handlers = {
                 transcript = transcript.replace(/:/g, " says");
 		func_obj.attributes['current_index'] = comic_number;
                 // ToDo: Should we send the title as well?
-                func_obj.emit(':tell', transcript);
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', transcript, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -197,7 +188,8 @@ var handlers = {
     },
     'GetExplanation': function () {
         if (!('current_index' in this.attributes)){
-            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            var reprompt = "What can I help you with?";
+            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
         var func_obj = this;
@@ -212,7 +204,8 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 explanation = explanation.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.emit(':tell', explanation);
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', explanation, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -221,7 +214,8 @@ var handlers = {
     },
     'GetTitleText': function () {
         if (!('current_index' in this.attributes)){
-            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            var reprompt = "What can I help you with?";
+            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic." reprompt);
             return;
         }
         var func_obj = this;
@@ -236,7 +230,9 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 title = title.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.emit(':tell', title);
+
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', title, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -246,7 +242,8 @@ var handlers = {
     'GetNextComic': function () {
 
         if (!('current_index' in this.attributes)){
-            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            var reprompt = "What can I help you with?";
+            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
         if(this.attributes['current_index'] >= num_comics()){
@@ -280,7 +277,8 @@ var handlers = {
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
                 func_obj.attributes['current_index'] = next_index;
-                func_obj.emit(':tell', transcript);
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', transcript, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -289,7 +287,8 @@ var handlers = {
     },
     'GetPreviousComic': function () {
         if (!('current_index' in this.attributes)){
-            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            var reprompt = "What can I help you with?";
+            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
         if(this.attributes['current_index'] == 1){
@@ -324,7 +323,9 @@ var handlers = {
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
                 func_obj.attributes['current_index'] = previous_index;
-                func_obj.emit(':tell', transcript);
+
+                var reprompt = "What else can I do for you?"
+                func_obj.emit(':ask', transcript, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
@@ -333,25 +334,32 @@ var handlers = {
 
     },
     'GetBlackHat': function () {
-        this.emit(':tell', 'Black Hat is a stick figure character in xkcd. He is distinguished by his eponymous black hat. In his earliest appearances, Black Hat wore a taller top-hat style hat, that quickly evolved to have the current shape and style of a pork pie hat. Judging by 1139: Rubber and Glue, he has worn the hat since he was a child. That strip also gave him the nickname Hatboy. Black Hat seems to have short hair, as shown in Journal series, 412: Startled and 1401: New. He is revealed to be a blogger in the Secretary series, when Cory Doctorow referred to him as one of our own. Unlike many other characters in xkcd, he seems to represent the same character in every appearance.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'Black Hat is a stick figure character in xkcd. He is distinguished by his eponymous black hat. In his earliest appearances, Black Hat wore a taller top-hat style hat, that quickly evolved to have the current shape and style of a pork pie hat. Judging by 1139: Rubber and Glue, he has worn the hat since he was a child. That strip also gave him the nickname Hatboy. Black Hat seems to have short hair, as shown in Journal series, 412: Startled and 1401: New. He is revealed to be a blogger in the Secretary series, when Cory Doctorow referred to him as one of our own. Unlike many other characters in xkcd, he seems to represent the same character in every appearance.', reprompt);
     },
     'GetBeretGuy': function () {
-        this.emit(':tell', 'Beret Guy is an optimist, and sometimes a naive one (although he is rarely a victim in the strip). He is a funny and sometimes even borderline cute character, and when he is in the strip is usually the basis of that strips joke. He enjoys philosophizing, often taking the role of the existentialist. He has a very surreal side to him, often thinking about or being involved in bizarre situations. He also is shown to take things far too literally, sometimes making things surreal.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'Beret Guy is an optimist, and sometimes a naive one (although he is rarely a victim in the strip). He is a funny and sometimes even borderline cute character, and when he is in the strip is usually the basis of that strips joke. He enjoys philosophizing, often taking the role of the existentialist. He has a very surreal side to him, often thinking about or being involved in bizarre situations. He also is shown to take things far too literally, sometimes making things surreal.', reprompt);
     },
     'GetCueball': function () {
-        this.emit(':tell', 'Cueball is a stick figure character in xkcd, distinguished from other characters by having no distinguishing features (including no hair or hat). The name is unofficial, and pretty much only used on explain xkcd and TV Tropes. Like other xkcd characters, Cueball does not necessarily represent the same character from comic to comic, and is not necessarily a unique character in any given strip. Instead, he represents a generic everyman. In several comics, there are multiple such stick figures, any of whom could be called Cueball.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'Cueball is a stick figure character in xkcd, distinguished from other characters by having no distinguishing features (including no hair or hat). The name is unofficial, and pretty much only used on explain xkcd and TV Tropes. Like other xkcd characters, Cueball does not necessarily represent the same character from comic to comic, and is not necessarily a unique character in any given strip. Instead, he represents a generic everyman. In several comics, there are multiple such stick figures, any of whom could be called Cueball.', reprompt);
     },
     'GetHairy': function () {
-        this.emit(':tell', 'Hairy is a stick figure character in xkcd. The name is unofficial, used by xkcd explainers to describe male characters with hair and no other distinguishing features.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'Hairy is a stick figure character in xkcd. The name is unofficial, used by xkcd explainers to describe male characters with hair and no other distinguishing features.', reprompt);
     },
     'GetMegan': function () {
-        this.emit(':tell', 'Megan is a stick figure character in xkcd. She is the second-most frequently appearing character, after Cueball, and the most frequently appearing female character. She does not necessarily always represent the same character from comic to comic. She is essentially the female equivalent of Cueball, representing the every-woman to his everyman. This is less clear than for Cueball as there are several comics, where there are multiple Cueball-like figures, any of whom could be called Cueball.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'Megan is a stick figure character in xkcd. She is the second-most frequently appearing character, after Cueball, and the most frequently appearing female character. She does not necessarily always represent the same character from comic to comic. She is essentially the female equivalent of Cueball, representing the every-woman to his everyman. This is less clear than for Cueball as there are several comics, where there are multiple Cueball-like figures, any of whom could be called Cueball.', reprompt);
     },
     'GetPonytail': function () {
-        this.emit(':tell', 'Ponytail is a stick figure character in xkcd, and the second most used female character, although she is far less used than Megan. She is distinguished from other characters by her blonde hair which is set up in a ponytail. Like Cueball and Megan, she does not necessarily represent the same character from comic to comic.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'Ponytail is a stick figure character in xkcd, and the second most used female character, although she is far less used than Megan. She is distinguished from other characters by her blonde hair which is set up in a ponytail. Like Cueball and Megan, she does not necessarily represent the same character from comic to comic.', reprompt);
     },
     'GetWhiteHat': function () {
-        this.emit(':tell', 'White Hat is a stick figure character in xkcd. He is distinguished by his eponymous white hat which appears to be in the shape and style of a boater. His appearance is identical to that of Black Hat other than the color of their respective hats. Unlike Black Hat, however, does not necessarily represent the same character in each appearance.');
+        var reprompt = "What else can I do for you?"
+        this.emit(':ask', 'White Hat is a stick figure character in xkcd. He is distinguished by his eponymous white hat which appears to be in the shape and style of a boater. His appearance is identical to that of Black Hat other than the color of their respective hats. Unlike Black Hat, however, does not necessarily represent the same character in each appearance.', reprompt);
     },
     'AMAZON.HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
@@ -362,23 +370,25 @@ var handlers = {
     'LaunchRequest': function(){
         var speechOutput = "Welcome to x k c d. You can ask me for the most recent x k c d comic or a random x k c d comic at anytime. If you would like more information about a comic you just heard, you may ask for an explanation by saying explain. If you would like to hear the mouse over text associated with a comic you just heard, you may do so by saying mouse over text";
         var reprompt = "What can I help you with?";
-        this.emit(':tell', speechOutput, reprompt);
+        this.emit(':ask', speechOutput, reprompt);
         return;
     },
     'AMAZON.CancelIntent': function () {
-        this.emit(':tell', 'Canceling, Goodbye!');
+        shouldEndSession = true;
     },
     'AMAZON.StopIntent': function () {
-        this.emit(':tell', 'Stopping, Goodbye!');
+        shouldEndSession = true;
     },
     'SaveMostRecent': function () {
         if (!('current_index' in this.attributes)){
-            this.emit(':tell', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.");
+            var reprompt = "What can I help you with?";
+            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
       var func_obj = this;
       if (!this.attributes['current_index']){
-        this.emit(':tell', 'Whops, there was an error with current ID');
+        var reprompt = "What can I help you with?";
+        this.emit(':ask', 'Whops, there was an error with current ID', reprompt);
         return;
       }
       else {
@@ -390,7 +400,8 @@ var handlers = {
           }
         });
       }
-      this.emit(':tell', 'This comic has been saved');
+      var reprompt = "What can I help you with?";
+      this.emit(':ask', 'This comic has been saved', reprompt);
     },
     'ReadFavoriteComic': function () {
       var func_obj = this;
@@ -426,7 +437,8 @@ var handlers = {
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
                 func_obj.attributes['current_index'] = comicId;
-                func_obj.emit(':tell', transcript);
+                var reprompt = "What can I help you with?";
+                func_obj.emit(':ask', transcript, reprompt);
             }
             else{
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
