@@ -19,6 +19,9 @@ GetComicNumber what number is that comic
 GetComicNumber what number was that
 GetComicNumber which comic was that
 GetComicNumber what was that comic
+GetComicNumber what comic number is this
+GetComicNumber what is that comic called
+GetComicNumber what is the title
 GetTitleText get the mouse over text
 GetTitleText get the title text
 GetTitleText give me the mouse over text
@@ -67,3 +70,8 @@ GetPonytail pony tale
 RepeatPrompt can you repeat that
 RepeatPrompt can you say that again
 RepeatPrompt say that again
+AMAZON.CancelIntent fuck you
+DeleteFavorite remove this from my favorites
+DeleteFavorite I dont like this anymore
+DeleteFavorite remove from favorites
+DeleteFavorite remove
