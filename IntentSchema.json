@@ -13,6 +13,9 @@
       "intent": "GetNextComic"
     },
     {
+      "intent": "GetComicNumber"
+    },
+    {
       "intent": "GetTitleText"
     },
     {
