@@ -22,7 +22,6 @@ var conn = mysql.createPool({
   password  :  'xkcdonalexa' ,  // MySQL password
   database  :  'XKCD_favorites'
 });
-conn.connect();
 
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
