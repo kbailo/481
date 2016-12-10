@@ -77,13 +77,12 @@ var handlers = {
                 comic_num++;
                 // func_obj.attributes['current_index'] = comic_num;
                 func_obj.attributes['current_data'] = {current_index: comic_num}
-		$('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+		transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
 
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
 
                 var reprompt = "What else can I do for you?";
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
@@ -117,7 +116,7 @@ var handlers = {
                     if(!error){
                         var $ = cheerio.load(body);
                         var transcript = "";
-                        $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+                        transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
                         // Newlines cause Alexa to stop, make sure to romove them
                         transcript = transcript.replace(/\n/g, " ");
                         // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -164,7 +163,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+                transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -199,7 +198,6 @@ var handlers = {
                 // Newlines cause Alexa to stop, make sure to romove them
                 explanation = explanation.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
-                explanation = explanation.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
                 func_obj.attributes['current_data']['current_prompt'] =  explanation;
                 var reprompt = "What else can I do for you?"
@@ -224,16 +222,16 @@ var handlers = {
 	request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
-                var comicNumber = "";
-                comicNumber = $('.firstHeading').children().text();
+                var comicNumber = "This is comic number";
+                comicNumber += $('.firstHeading').children().text();
                 // Newlines cause Alexa to stop, make sure to romove them
-                comicNumber = title.replace(/\n/g, " ");
+                comicNumber = comicNumber.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
-                comicNumber = title.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
-                func_obj.attributes['current_data']['current_prompt'] = title;
+                comicNumber = comicNumber.replace(/:/g, ", titled");
+		
+                func_obj.attributes['current_data']['current_prompt'] = comicNumber;
                 var reprompt = "What else can I do for you?"
-                func_obj.emit(':ask', title, reprompt);
+                func_obj.emit(':ask', comicNumber, reprompt);
             }
             else{
                 func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
@@ -254,12 +252,10 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var title = "";
-                title = $("span[style='color:grey']").parent().text().substring(12);
+                title += $("span[style='color:grey']").parent().text().substring(12);
                 // Newlines cause Alexa to stop, make sure to romove them
                 title = title.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
-                title = title.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
                 func_obj.attributes['current_data']['current_prompt'] = title;
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', title, reprompt);
@@ -298,12 +294,11 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+                transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
                 func_obj.attributes['current_data']['current_index'] = next_index;
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
                 var reprompt = "What else can I do for you?";
@@ -335,7 +330,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+                transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
 		
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
@@ -454,12 +449,11 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-                $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+                transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
                 func_obj.attributes['current_data']['current_index'] = comicId;
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
                 var reprompt = "What can I help you with?";
