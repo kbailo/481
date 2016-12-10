@@ -459,8 +459,8 @@ var handlers = {
         });
       }
       var reprompt = "What can I help you with?";
-      this.attributes['current_data']['current_prompt'] = 'This comic has been saved';
-      this.emit(':ask', 'This comic has been saved', reprompt);
+      this.attributes['current_data']['current_prompt'] = 'This comic has been removed';
+      this.emit(':ask', 'This comic has been removed', reprompt);
     },
     'ReadFavoriteComic': function () {
       var func_obj = this;
