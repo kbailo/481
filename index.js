@@ -459,8 +459,8 @@ var handlers = {
         });
       }
       var reprompt = "What can I help you with?";
-      this.attributes['current_data']['current_prompt'] = 'This comic has been removed';
-      this.emit(':ask', 'This comic has been removed', reprompt);
+      this.attributes['current_data']['current_prompt'] = 'This comic has been removed.';
+      this.emit(':ask', 'This comic has been removed.', reprompt);
     },
     'ReadFavoriteComic': function () {
       var func_obj = this;
@@ -469,37 +469,41 @@ var handlers = {
           console.log('ERR:', err);
           func_obj.emit(':tell', err);
         }
-        if(rows.legnth === 0){
+        console.log('rows', rows);
+        if(rows.length === 0){
           console.log('no comics found');
-          let complaint = 'You have no saved comics go fuck yourself!';
-          func_obj.attributes['current_data']['current_prompt'] = complaint;
+          let complaint = 'You have no saved comics.';
+          func_obj.attributes['current_data'] = {current_prompt: complaint};
           var reprompt = "What can I help you with?";
           func_obj.emit(':ask', complaint, reprompt);
         }
-        var comicId = rows[Math.floor(Math.random()*rows.length)];
-        var comicId = comicId.comicId;
+        else{
+            var comicId = rows[Math.floor(Math.random()*rows.length)];
+            var comicId = comicId.comicId;
+            // var comicId = 0;
 
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + comicId.toString();
-        request(url, function(error, response, body) {
-            if(!error){
-                var $ = cheerio.load(body);
-                var transcript = "";
-                transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
-                // Newlines cause Alexa to stop, make sure to romove them
-                transcript = transcript.replace(/\n/g, " ");
-                // Making the diaglouge syntax of the transcript more natural for Alexa to read
-                transcript = transcript.replace(/:/g, " says");
-            		transcript = transcript.replace("<-", "arrow pointing left");
-            		transcript = transcript.replace("->", "arrow pointing right");
-                func_obj.attributes['current_data']['current_index'] = comicId;
-                func_obj.attributes['current_data']['current_prompt'] = transcript;
-                var reprompt = "What can I help you with?";
-                func_obj.emit(':ask', transcript, reprompt);
-            }
-            else{
-                func_obj.emit(':tell', "We're sorry, it looks like there was an error");
-            }
-        });
+            var url = 'http://www.explainxkcd.com/wiki/index.php/' + comicId.toString();
+            request(url, function(error, response, body) {
+                if(!error){
+                    var $ = cheerio.load(body);
+                    var transcript = "";
+                    transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
+                    // Newlines cause Alexa to stop, make sure to romove them
+                    transcript = transcript.replace(/\n/g, " ");
+                    // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                    transcript = transcript.replace(/:/g, " says");
+                		transcript = transcript.replace("<-", "arrow pointing left");
+                		transcript = transcript.replace("->", "arrow pointing right");
+                    func_obj.attributes['current_data']['current_index'] = comicId;
+                    func_obj.attributes['current_data']['current_prompt'] = transcript;
+                    var reprompt = "What can I help you with?";
+                    func_obj.emit(':ask', transcript, reprompt);
+                }
+                else{
+                    func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+                }
+            });
+        }
       });
     }
 };
