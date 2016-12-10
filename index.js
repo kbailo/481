@@ -474,6 +474,7 @@ var handlers = {
           func_obj.attributes['current_data']['current_prompt'] = complaint;
           var reprompt = "What can I help you with?";
           func_obj.emit(':ask', complaint, reprompt);
+          return;
         }
         var comicId = rows[Math.floor(Math.random()*rows.length)];
         var comicId = comicId.comicId;
