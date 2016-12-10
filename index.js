@@ -469,12 +469,12 @@ var handlers = {
           console.log('ERR:', err);
           func_obj.emit(':tell', err);
         }
-        if(!rows.legnth){
+        if(rows.legnth === 0){
+          console.log('no comics found');
           let complaint = 'You have no saved comics go fuck yourself!';
           func_obj.attributes['current_data']['current_prompt'] = complaint;
           var reprompt = "What can I help you with?";
           func_obj.emit(':ask', complaint, reprompt);
-          return;
         }
         var comicId = rows[Math.floor(Math.random()*rows.length)];
         var comicId = comicId.comicId;
