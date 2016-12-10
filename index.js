@@ -12,6 +12,9 @@ var event_obj = null;
 // ToDo: Find our app id (skill id?) and included it if needed
 // var APP_ID = "";
 
+
+// {current_index: x, current_prompt: y}
+
 var conn = mysql.createConnection({
   host      :  'xkcd-alexa-favorites.co3uedzbghxg.us-east-1.rds.amazonaws.com' ,  // RDS endpoint
   user      :  'mrjdunaj' ,  // MySQL username
@@ -61,8 +64,6 @@ var num_comics = function() {
 
 var handlers = {
     'GetMostRecentComic': function () {
-        // ToDo: change this to pull the most recent comic number
-        this.attributes['current_index'] = 1755;
         var func_obj = this;
         // url of the most recent xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
@@ -74,29 +75,32 @@ var handlers = {
                 var comic_num = 0;
                 comic_num = $('#mw-content-text > center > p > a:nth-child(3) > b').text();
                 comic_num++;
-                func_obj.attributes['current_index'] = comic_num;
-		if($('h2:has(#Citations)').length){
-		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-	        }
-		else if($('h2:has(#References)').length){
-		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#References)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-		}
-		else if($('h2:has(#Trivia)').length){
-		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-	        }
-		else{
-	           transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-		}
+                // func_obj.attributes['current_index'] = comic_num;
+                func_obj.attributes['current_data'] = {current_index: comic_num}
+        		if($('h2:has(#Citations)').length){
+        		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+        	        }
+        		else if($('h2:has(#References)').length){
+        		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#References)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+        		}
+        		else if($('h2:has(#Trivia)').length){
+        		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+                }
+        		else{
+        	       transcript += $("h2:has(#Transcript)").nextUntil("span:has(#discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+        		}
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
 
-                var reprompt = "What else can I do for you?"
+                var reprompt = "What else can I do for you?";
+                func_obj.attributes['current_data']['current_prompt'] = transcript;
                 func_obj.emit(':ask', transcript, reprompt);
             }
             else{
+                func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
@@ -106,7 +110,7 @@ var handlers = {
 
         var total_comics = num_comics();
         var random = Math.floor(Math.random() * total_comics);
-        func_obj.attributes['current_index'] = random;
+        func_obj.attributes['current_data'] = {current_index: random};
 
         // url of the most a random xkcd comic
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
@@ -135,9 +139,11 @@ var handlers = {
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
                 var reprompt = "What else can I do for you?"
+                func_obj.attributes['current_data']['current_prompt'] = transcript;
                 func_obj.emit(':ask', transcript, reprompt);
             }
             else{
+                func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
@@ -151,8 +157,9 @@ var handlers = {
         console.log('comic_number', event_obj.request.intent.slots.comic_number);
         var comic_number = parseInt(event_obj.request.intent.slots.comic_number.value);
 	if(comic_number > num_comics() || comic_number < 1){
-              func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
-              return;
+            func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks this comic doesn't exist. Please choose another comic.";
+            func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
+            return;
         }
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + comic_number;
         request(url, function(error, response, body) {
@@ -176,24 +183,28 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
-		func_obj.attributes['current_index'] = comic_number;
+                // func_obj.attributes['current_index'] = comic_number;
+                func_obj.attributes['current_data'] = {current_index: comic_number, current_prompt: transcript};
                 // ToDo: Should we send the title as well?
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', transcript, reprompt);
             }
             else{
+                func_obj.attributes['current_data'] = {current_prompt: transcript};
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
     },
     'GetExplanation': function () {
-        if (!('current_index' in this.attributes)){
+        var func_obj = this;
+        if (!('current_index' in this.attributes['current_data'])){
             var reprompt = "What can I help you with?";
+            func_obj.attributes['current_data'] = {current_prompt: "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic."};
             this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
-        var func_obj = this;
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_index'];
+        
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_data']['current_index'];
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
@@ -204,22 +215,25 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 explanation = explanation.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
+                func_obj.attributes['current_data']['current_prompt'] =  explanation;
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', explanation, reprompt);
             }
             else{
+                func_obj.attributes['current_data']['current_prompt'] =  "We're sorry, it looks like there was an error";
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
     },
     'GetTitleText': function () {
-        if (!('current_index' in this.attributes)){
+        if (!('current_index' in this.attributes['current_data'])){
             var reprompt = "What can I help you with?";
-            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic." reprompt);
+            this.attributes['current_data']['current_prompt'] = "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.";
+            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
         var func_obj = this;
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_index'];
+        var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_data']['current_index'];
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
@@ -230,27 +244,30 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 title = title.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-
+                func_obj.attributes['current_data']['current_prompt'] = title;
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', title, reprompt);
             }
             else{
+                func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
     },
     'GetNextComic': function () {
 
-        if (!('current_index' in this.attributes)){
+        if (!('current_index' in this.attributes['current_data'])){
             var reprompt = "What can I help you with?";
+            this.attributes['current_data'] = {current_prompt: "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic."};
             this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
-        if(this.attributes['current_index'] >= num_comics()){
-            this.emit(':tell', "We're sorry, it looks like there's no next comic.");
+        if(this.attributes['current_data']['current_index'] >= num_comics()){
+            this.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there's no next comic.";
+            this.emit(':ask', "We're sorry, it looks like there's no next comic.");
             return;
         }
-        var next_index = this.attributes['current_index'] + 1;
+        var next_index = this.attributes['current_data']['current_index'] + 1;
         var func_obj = this;
 
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + next_index.toString();
@@ -276,26 +293,30 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.attributes['current_index'] = next_index;
-                var reprompt = "What else can I do for you?"
+                func_obj.attributes['current_data']['current_index'] = next_index;
+                func_obj.attributes['current_data']['current_prompt'] = transcript;
+                var reprompt = "What else can I do for you?";
                 func_obj.emit(':ask', transcript, reprompt);
             }
             else{
+                func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
                 func_obj.emit(':tell', "We're sorry, it looks like there was an error");
             }
         })
     },
     'GetPreviousComic': function () {
-        if (!('current_index' in this.attributes)){
+        if (!('current_index' in this.attributes['current_data'])){
             var reprompt = "What can I help you with?";
+            this.attributes['current_data'] = {current_prompt: "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic."};
             this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
-        if(this.attributes['current_index'] == 1){
-            this.emit(':tell', "We're sorry, it looks like there's no previous comic.");
+        if(this.attributes['current_data']['current_index'] == 1){
+            this.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there's no previous comic.";
+            this.emit(':ask', "We're sorry, it looks like there's no previous comic.");
             return;
         }
-        var previous_index = this.attributes['current_index'] - 1;
+        var previous_index = this.attributes['current_data']['current_index'] - 1;
         var func_obj = this;
 
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + previous_index.toString();
@@ -322,7 +343,8 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.attributes['current_index'] = previous_index;
+                func_obj.attributes['current_data']['current_index'] = previous_index;
+                func_obj.attributes['current_data']['current_prompt'] = transcript;
 
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', transcript, reprompt);
@@ -335,31 +357,43 @@ var handlers = {
     },
     'GetBlackHat': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'Black Hat is a stick figure character in xkcd. He is distinguished by his eponymous black hat. In his earliest appearances, Black Hat wore a taller top-hat style hat, that quickly evolved to have the current shape and style of a pork pie hat. Judging by 1139: Rubber and Glue, he has worn the hat since he was a child. That strip also gave him the nickname Hatboy. Black Hat seems to have short hair, as shown in Journal series, 412: Startled and 1401: New. He is revealed to be a blogger in the Secretary series, when Cory Doctorow referred to him as one of our own. Unlike many other characters in xkcd, he seems to represent the same character in every appearance.';
         this.emit(':ask', 'Black Hat is a stick figure character in xkcd. He is distinguished by his eponymous black hat. In his earliest appearances, Black Hat wore a taller top-hat style hat, that quickly evolved to have the current shape and style of a pork pie hat. Judging by 1139: Rubber and Glue, he has worn the hat since he was a child. That strip also gave him the nickname Hatboy. Black Hat seems to have short hair, as shown in Journal series, 412: Startled and 1401: New. He is revealed to be a blogger in the Secretary series, when Cory Doctorow referred to him as one of our own. Unlike many other characters in xkcd, he seems to represent the same character in every appearance.', reprompt);
     },
     'GetBeretGuy': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'Beret Guy is an optimist, and sometimes a naive one (although he is rarely a victim in the strip). He is a funny and sometimes even borderline cute character, and when he is in the strip is usually the basis of that strips joke. He enjoys philosophizing, often taking the role of the existentialist. He has a very surreal side to him, often thinking about or being involved in bizarre situations. He also is shown to take things far too literally, sometimes making things surreal.';
         this.emit(':ask', 'Beret Guy is an optimist, and sometimes a naive one (although he is rarely a victim in the strip). He is a funny and sometimes even borderline cute character, and when he is in the strip is usually the basis of that strips joke. He enjoys philosophizing, often taking the role of the existentialist. He has a very surreal side to him, often thinking about or being involved in bizarre situations. He also is shown to take things far too literally, sometimes making things surreal.', reprompt);
     },
     'GetCueball': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'Cueball is a stick figure character in xkcd, distinguished from other characters by having no distinguishing features (including no hair or hat). The name is unofficial, and pretty much only used on explain xkcd and TV Tropes. Like other xkcd characters, Cueball does not necessarily represent the same character from comic to comic, and is not necessarily a unique character in any given strip. Instead, he represents a generic everyman. In several comics, there are multiple such stick figures, any of whom could be called Cueball.';
         this.emit(':ask', 'Cueball is a stick figure character in xkcd, distinguished from other characters by having no distinguishing features (including no hair or hat). The name is unofficial, and pretty much only used on explain xkcd and TV Tropes. Like other xkcd characters, Cueball does not necessarily represent the same character from comic to comic, and is not necessarily a unique character in any given strip. Instead, he represents a generic everyman. In several comics, there are multiple such stick figures, any of whom could be called Cueball.', reprompt);
     },
     'GetHairy': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'Hairy is a stick figure character in xkcd. The name is unofficial, used by xkcd explainers to describe male characters with hair and no other distinguishing features.';
         this.emit(':ask', 'Hairy is a stick figure character in xkcd. The name is unofficial, used by xkcd explainers to describe male characters with hair and no other distinguishing features.', reprompt);
     },
     'GetMegan': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'Megan is a stick figure character in xkcd. She is the second-most frequently appearing character, after Cueball, and the most frequently appearing female character. She does not necessarily always represent the same character from comic to comic. She is essentially the female equivalent of Cueball, representing the every-woman to his everyman. This is less clear than for Cueball as there are several comics, where there are multiple Cueball-like figures, any of whom could be called Cueball.';
         this.emit(':ask', 'Megan is a stick figure character in xkcd. She is the second-most frequently appearing character, after Cueball, and the most frequently appearing female character. She does not necessarily always represent the same character from comic to comic. She is essentially the female equivalent of Cueball, representing the every-woman to his everyman. This is less clear than for Cueball as there are several comics, where there are multiple Cueball-like figures, any of whom could be called Cueball.', reprompt);
     },
     'GetPonytail': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'Ponytail is a stick figure character in xkcd, and the second most used female character, although she is far less used than Megan. She is distinguished from other characters by her blonde hair which is set up in a ponytail. Like Cueball and Megan, she does not necessarily represent the same character from comic to comic.';
         this.emit(':ask', 'Ponytail is a stick figure character in xkcd, and the second most used female character, although she is far less used than Megan. She is distinguished from other characters by her blonde hair which is set up in a ponytail. Like Cueball and Megan, she does not necessarily represent the same character from comic to comic.', reprompt);
     },
     'GetWhiteHat': function () {
         var reprompt = "What else can I do for you?"
+        this.attributes['current_data']['current_prompt'] = 'White Hat is a stick figure character in xkcd. He is distinguished by his eponymous white hat which appears to be in the shape and style of a boater. His appearance is identical to that of Black Hat other than the color of their respective hats. Unlike Black Hat, however, does not necessarily represent the same character in each appearance.';
         this.emit(':ask', 'White Hat is a stick figure character in xkcd. He is distinguished by his eponymous white hat which appears to be in the shape and style of a boater. His appearance is identical to that of Black Hat other than the color of their respective hats. Unlike Black Hat, however, does not necessarily represent the same character in each appearance.', reprompt);
+    },
+    'RepeatPrompt': function () {
+        var reprompt = "What else can I do for you?";
+        var func_obj = this;
+        this.emit(':ask', func_obj.attributes['current_data']['current_prompt'], reprompt);
     },
     'AMAZON.HelpIntent': function () {
         // ToDo: verify that we are passing the right paramaters to emit for this intent
@@ -380,27 +414,30 @@ var handlers = {
         shouldEndSession = true;
     },
     'SaveMostRecent': function () {
-        if (!('current_index' in this.attributes)){
-            var reprompt = "What can I help you with?";
-            this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
-            return;
-        }
+        // if (!('current_index' in this.attributes)){
+        //     var reprompt = "What can I help you with?";
+        //     this.attributes['current_data'] = {current_prompt: "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic."};
+        //     this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
+        //     return;
+        // }
       var func_obj = this;
-      if (!this.attributes['current_index']){
+      if (!('current_index' in this.attributes['current_data'])){
         var reprompt = "What can I help you with?";
+        this.attributes['current_data'] = {current_prompt: 'Whoops, there was an error with current ID'};
         this.emit(':ask', 'Whops, there was an error with current ID', reprompt);
         return;
       }
       else {
         console.log('userId', userIdLocator);
-        console.log('comicId', func_obj.attributes['current_index']);
-        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (\'' + userIdLocator + '\', ' + func_obj.attributes['current_index'] + ');', function (err) {
+        console.log('comicId', func_obj.attributes['current_data']['current_index']);
+        conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (\'' + userIdLocator + '\', ' + func_obj.attributes['current_data']['current_index'] + ');', function (err) {
           if(err){
             console.log('ERR:', err);
           }
         });
       }
       var reprompt = "What can I help you with?";
+      this.attributes['current_data']['current_prompt'] = 'This comic has been saved';
       this.emit(':ask', 'This comic has been saved', reprompt);
     },
     'ReadFavoriteComic': function () {
@@ -436,7 +473,8 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // ToDo: Should we send the title as well?
-                func_obj.attributes['current_index'] = comicId;
+                func_obj.attributes['current_data']['current_index'] = comicId;
+                func_obj.attributes['current_data']['current_prompt'] = transcript;
                 var reprompt = "What can I help you with?";
                 func_obj.emit(':ask', transcript, reprompt);
             }
