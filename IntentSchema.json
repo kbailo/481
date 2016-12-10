@@ -46,6 +46,9 @@
       "intent": "GetWhiteHat"
     },
     {
+      "intent": "RepeatPrompt"
+    },
+    {
       "intent": "GetSpecificComic",
       "slots": [
         {
