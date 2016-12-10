@@ -469,7 +469,7 @@ var handlers = {
           console.log('ERR:', err);
           func_obj.emit(':tell', err);
         }
-        if(!rows){
+        if(!rows.legnth){
           let complaint = 'You have no saved comics go fuck yourself!';
           func_obj.attributes['current_data']['current_prompt'] = complaint;
           var reprompt = "What can I help you with?";
