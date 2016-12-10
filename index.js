@@ -452,7 +452,7 @@ var handlers = {
       else {
         console.log('userId', userIdLocator);
         console.log('comicId', func_obj.attributes['current_data']['current_index']);
-        conn.query('DELETE FROM favorites WHERE alexaId = \'' + userIdLocator + '\' AND comicId = ' + func_obj.attributes['current_data']['current_index'] + ');', function (err) {
+        conn.query('DELETE FROM favorites WHERE alexaId = \'' + userIdLocator + '\' AND comicId = ' + func_obj.attributes['current_data']['current_index'] + ';', function (err) {
           if(err){
             console.log('ERR:', err);
           }
