@@ -83,6 +83,8 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
+		transcript = transcript.replace("<-", "arrow pointing left");
+		transcript = transcript.replace("->", "arrow pointing right");
 
                 var reprompt = "What else can I do for you?";
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
@@ -121,7 +123,8 @@ var handlers = {
                         transcript = transcript.replace(/\n/g, " ");
                         // Making the diaglouge syntax of the transcript more natural for Alexa to read
                         transcript = transcript.replace(/:/g, " says");
-                        // ToDo: Should we send the title as well?
+			transcript = transcript.replace("<-", "arrow pointing left");
+			transcript = transcript.replace("->", "arrow pointing right");
                         var reprompt = "What else can I do for you?"
                         func_obj.attributes['current_data']['current_prompt'] = transcript;
                         func_obj.emit(':ask', transcript, reprompt);
@@ -169,8 +172,11 @@ var handlers = {
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
                 // func_obj.attributes['current_index'] = comic_number;
+		transcript = transcript.replace("<=", "arrow pointing left");
+		transcript = transcript.replace("=>", "arrow pointing right");
+		    
                 func_obj.attributes['current_data'] = {current_index: comic_number, current_prompt: transcript};
-                // ToDo: Should we send the title as well?
+             
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', transcript, reprompt);
             }
@@ -198,7 +204,9 @@ var handlers = {
                 // Newlines cause Alexa to stop, make sure to romove them
                 explanation = explanation.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
-                // ToDo: Should we send the title as well?
+		
+		explanation = explanation.replace("[edit]", "");
+		// Doesn't allow for the "[edit]" parts of explanation to be read.
                 func_obj.attributes['current_data']['current_prompt'] =  explanation;
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', explanation, reprompt);
@@ -299,6 +307,8 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
+		transcript = transcript.replace("<-", "arrow pointing left");
+		transcript = transcript.replace("->", "arrow pointing right");
                 func_obj.attributes['current_data']['current_index'] = next_index;
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
                 var reprompt = "What else can I do for you?";
@@ -336,7 +346,8 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
+		transcript = transcript.replace("<-", "arrow pointing left");
+		transcript = transcript.replace("->", "arrow pointing right");
                 func_obj.attributes['current_data']['current_index'] = previous_index;
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
 
@@ -454,6 +465,8 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
+		transcript = transcript.replace("<-", "arrow pointing left");
+		transcript = transcript.replace("->", "arrow pointing right");
                 func_obj.attributes['current_data']['current_index'] = comicId;
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
                 var reprompt = "What can I help you with?";
