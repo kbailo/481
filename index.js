@@ -494,8 +494,7 @@ var handlers = {
                     transcript = transcript.replace(/:/g, " says");
                 		transcript = transcript.replace("<-", "arrow pointing left");
                 		transcript = transcript.replace("->", "arrow pointing right");
-                    func_obj.attributes['current_data']['current_index'] = comicId;
-                    func_obj.attributes['current_data']['current_prompt'] = transcript;
+                    func_obj.attributes['current_data'] = {current_index: comicId, current_prompt: transcript};
                     var reprompt = "What can I help you with?";
                     func_obj.emit(':ask', transcript, reprompt);
                 }
