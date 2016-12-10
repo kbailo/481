@@ -194,7 +194,7 @@ var handlers = {
             if(!error){
                 var $ = cheerio.load(body);
                 var explanation = "";
-                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text().substring(0, 8000);;
                 // Newlines cause Alexa to stop, make sure to romove them
                 explanation = explanation.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
