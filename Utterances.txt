@@ -14,6 +14,11 @@ GetExplanation why is that funny
 GetExplanation explain it to me
 GetExplanation explain that to me
 GetExplanation I'm confused
+GetComicNumber get the number of that comic
+GetComicNumber what number is that comic
+GetComicNumber what number was that
+GetComicNumber which comic was that
+GetComicNumber what was that comic
 GetTitleText get the mouse over text
 GetTitleText get the title text
 GetTitleText give me the mouse over text
