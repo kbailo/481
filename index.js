@@ -97,6 +97,7 @@ var handlers = {
 
                 var reprompt = "What else can I do for you?";
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
+                func_obj.attributes['max_id'] = comic_num;
                 func_obj.emit(':ask', transcript, reprompt);
             }
             else{
@@ -107,40 +108,52 @@ var handlers = {
     },
     'GetRandomComic': function () {
         var func_obj = this;
-
-        var total_comics = num_comics();
-        var random = Math.floor(Math.random() * total_comics);
-        func_obj.attributes['current_data'] = {current_index: random};
-
-        // url of the most a random xkcd comic
-        var url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
-
+        var url = 'http://www.explainxkcd.com/wiki/index.php/Main_Page';
         // Make a request in order to scrape the most recent comics transcript
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
                 var transcript = "";
-		if($('h2:has(#Trivia)').length){
-		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-	        }
-		else if($('h2:has(#Citations)').length){
-		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-	        }
-		else if($('h2:has(#References)').length){
-		   transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#References)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-		}
-		else{
-		   transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
-		   transcript = transcript.substr(0,transcript.length-67);
-		}
-                // Newlines cause Alexa to stop, make sure to romove them
-                transcript = transcript.replace(/\n/g, " ");
-                // Making the diaglouge syntax of the transcript more natural for Alexa to read
-                transcript = transcript.replace(/:/g, " says");
-                // ToDo: Should we send the title as well?
-                var reprompt = "What else can I do for you?"
-                func_obj.attributes['current_data']['current_prompt'] = transcript;
-                func_obj.emit(':ask', transcript, reprompt);
+                var comic_num = 0;
+                comic_num = $('#mw-content-text > center > p > a:nth-child(3) > b').text();
+                comic_num++;
+                func_obj.attributes['max_id'] = comic_num;
+                var random = Math.floor(Math.random() * func_obj.attributes['max_id']);
+                func_obj.attributes['current_data'] = {current_index: random};
+                // url of the most a random xkcd comic
+                url = 'http://www.explainxkcd.com/wiki/index.php/' + random;
+                // Make a request in order to scrape the most recent comics transcript
+                request(url, function(error, response, body) {
+                    if(!error){
+                        var $ = cheerio.load(body);
+                        var transcript = "";
+                        if($('h2:has(#Trivia)').length){
+                            transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Trivia)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+                        }
+                        else if($('h2:has(#Citations)').length){
+                            transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#Citations)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+                        }
+                        else if($('h2:has(#References)').length){
+                            transcript += $("h2:has(#Transcript)").nextUntil("h2:has(#References)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+                        }
+                        else{
+                            transcript += $("h2:has(#Transcript)").nextUntil("h1:has(#Discussion)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text();
+                            transcript = transcript.substr(0,transcript.length-67);
+                        }
+                        // Newlines cause Alexa to stop, make sure to romove them
+                        transcript = transcript.replace(/\n/g, " ");
+                        // Making the diaglouge syntax of the transcript more natural for Alexa to read
+                        transcript = transcript.replace(/:/g, " says");
+                        // ToDo: Should we send the title as well?
+                        var reprompt = "What else can I do for you?"
+                        func_obj.attributes['current_data']['current_prompt'] = transcript;
+                        func_obj.emit(':ask', transcript, reprompt);
+                    }
+                    else{
+                        func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
+                        func_obj.emit(':tell', "We're sorry, it looks like there was an error");
+                    }
+                })
             }
             else{
                 func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there was an error";
@@ -156,7 +169,14 @@ var handlers = {
         console.log('slots', event_obj.request.intent.slots);
         console.log('comic_number', event_obj.request.intent.slots.comic_number);
         var comic_number = parseInt(event_obj.request.intent.slots.comic_number.value);
-	if(comic_number > num_comics() || comic_number < 1){
+        if('max_id' in this.attributes){
+            if(comic_number > this.attributes['max_id'] || comic_number < 1){
+                func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks this comic doesn't exist. Please choose another comic.";
+                func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
+                return;
+            }
+        }
+        else if(comic_number > num_comics() || comic_number < 1){
             func_obj.attributes['current_data']['current_prompt'] = "We're sorry, it looks this comic doesn't exist. Please choose another comic.";
             func_obj.emit(':tell', "We're sorry, it looks this comic doesn't exist. Please choose another comic.");
             return;
@@ -262,7 +282,14 @@ var handlers = {
             this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
-        if(this.attributes['current_data']['current_index'] >= num_comics()){
+        if('max_id' in this.attributes){
+            if(this.attributes['current_data']['current_index'] >= this.attributes['max_id']){
+                this.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there's no next comic.";
+                this.emit(':ask', "We're sorry, it looks like there's no next comic.");
+                return;
+            }
+        }
+        else if(this.attributes['current_data']['current_index'] >= num_comics()){
             this.attributes['current_data']['current_prompt'] = "We're sorry, it looks like there's no next comic.";
             this.emit(':ask', "We're sorry, it looks like there's no next comic.");
             return;
