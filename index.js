@@ -413,10 +413,12 @@ var handlers = {
         return;
     },
     'AMAZON.CancelIntent': function () {
-        shouldEndSession = true;
+        // shouldEndSession = true;
+        this.emit(':tell', 'Goodbye');
     },
     'AMAZON.StopIntent': function () {
-        shouldEndSession = true;
+        // shouldEndSession = true;
+        this.emit(':tell', 'Ok');
     },
     'SaveMostRecent': function () {
         // if (!('current_index' in this.attributes)){
