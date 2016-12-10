@@ -1,6 +1,7 @@
 GetMostRecentComic latest x k c d
 GetMostRecentComic latest comic
 GetMostRecentComic most recent comic
+GetMostRecentComic todays comic
 GetMostRecentComic new comic
 GetMostRecentComic newest x k c d
 GetMostRecentComic newest comic
@@ -42,6 +43,7 @@ GetPreviousComic one back
 GetPreviousComic previous x k c d
 SaveMostRecent save this comic
 SaveMostRecent I liked that one
+SaveMostRecent add that to my favorites
 ReadFavoriteComic read me a favorite comic
 ReadFavoriteComic read me my favorite comic
 ReadFavoriteComic read me one of my favorite comics
