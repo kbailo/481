@@ -15,7 +15,8 @@ var event_obj = null;
 
 // {current_index: x, current_prompt: y}
 
-var conn = mysql.createConnection({
+var conn = mysql.createPool({
+  connectionLimit: 2,
   host      :  'xkcd-alexa-favorites.co3uedzbghxg.us-east-1.rds.amazonaws.com' ,  // RDS endpoint
   user      :  'mrjdunaj' ,  // MySQL username
   password  :  'xkcdonalexa' ,  // MySQL password
@@ -59,7 +60,7 @@ var num_comics = function() {
     else{
         return (num_new_comics + 3);
     }
-    
+
 };
 
 var handlers = {
@@ -174,9 +175,9 @@ var handlers = {
                 // func_obj.attributes['current_index'] = comic_number;
 		transcript = transcript.replace("<=", "arrow pointing left");
 		transcript = transcript.replace("=>", "arrow pointing right");
-		    
+
                 func_obj.attributes['current_data'] = {current_index: comic_number, current_prompt: transcript};
-             
+
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', transcript, reprompt);
             }
@@ -194,17 +195,17 @@ var handlers = {
             this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
-        
+
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_data']['current_index'];
         request(url, function(error, response, body) {
             if(!error){
                 var $ = cheerio.load(body);
                 var explanation = "";
-                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text().substring(0, 8000);;
+                explanation += $("h2:has(#Explanation)").nextUntil("h2:has(#Transcript)").not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"]').text().substring(0, 8000);
                 // Newlines cause Alexa to stop, make sure to romove them
                 explanation = explanation.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
-		
+
 		explanation = explanation.replace("[edit]", "");
 		// Doesn't allow for the "[edit]" parts of explanation to be read.
                 func_obj.attributes['current_data']['current_prompt'] =  explanation;
@@ -225,7 +226,7 @@ var handlers = {
             this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
             return;
         }
-        
+
         var url = 'http://www.explainxkcd.com/wiki/index.php/' + this.attributes['current_data']['current_index'];
 	request(url, function(error, response, body) {
             if(!error){
@@ -236,7 +237,7 @@ var handlers = {
                 comicNumber = comicNumber.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 comicNumber = comicNumber.replace(/:/g, ", titled");
-		
+
                 func_obj.attributes['current_data']['current_prompt'] = comicNumber;
                 var reprompt = "What else can I do for you?"
                 func_obj.emit(':ask', comicNumber, reprompt);
@@ -341,7 +342,7 @@ var handlers = {
                 var $ = cheerio.load(body);
                 var transcript = "";
                 transcript += $('h2:has(#Transcript)').nextUntil('h2:has([class]), h2:has([id]), [id]').not('table[style="background-color: white; border: 1px solid #aaa; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); border-left: 10px solid #1E90FF; margin: 0 auto;"], .thumb.tright').text();
-		
+
                 // Newlines cause Alexa to stop, make sure to romove them
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
@@ -421,12 +422,6 @@ var handlers = {
         this.emit(':tell', 'Ok');
     },
     'SaveMostRecent': function () {
-        // if (!('current_index' in this.attributes)){
-        //     var reprompt = "What can I help you with?";
-        //     this.attributes['current_data'] = {current_prompt: "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic."};
-        //     this.emit(':ask', "We're sorry, it seems we're lost. Try asking for the most recent comic or a random comic.", reprompt);
-        //     return;
-        // }
       var func_obj = this;
       if (!('current_index' in this.attributes['current_data'])){
         var reprompt = "What can I help you with?";
@@ -438,6 +433,27 @@ var handlers = {
         console.log('userId', userIdLocator);
         console.log('comicId', func_obj.attributes['current_data']['current_index']);
         conn.query('INSERT INTO favorites (alexaId, comicId) VALUES (\'' + userIdLocator + '\', ' + func_obj.attributes['current_data']['current_index'] + ');', function (err) {
+          if(err){
+            console.log('ERR:', err);
+          }
+        });
+      }
+      var reprompt = "What can I help you with?";
+      this.attributes['current_data']['current_prompt'] = 'This comic has been saved';
+      this.emit(':ask', 'This comic has been saved', reprompt);
+    },
+    'DeleteFavorite': function () {
+      var func_obj = this;
+      if (!('current_index' in this.attributes['current_data'])){
+        var reprompt = "What can I help you with?";
+        this.attributes['current_data'] = {current_prompt: 'Whoops, there was an error with current ID'};
+        this.emit(':ask', 'Whops, there was an error with current ID', reprompt);
+        return;
+      }
+      else {
+        console.log('userId', userIdLocator);
+        console.log('comicId', func_obj.attributes['current_data']['current_index']);
+        conn.query('DELETE FROM favorites WHERE alexaId = \'' + userIdLocator + '\' AND comicId = ' + func_obj.attributes['current_data']['current_index'] + ');', function (err) {
           if(err){
             console.log('ERR:', err);
           }
@@ -467,8 +483,8 @@ var handlers = {
                 transcript = transcript.replace(/\n/g, " ");
                 // Making the diaglouge syntax of the transcript more natural for Alexa to read
                 transcript = transcript.replace(/:/g, " says");
-		transcript = transcript.replace("<-", "arrow pointing left");
-		transcript = transcript.replace("->", "arrow pointing right");
+            		transcript = transcript.replace("<-", "arrow pointing left");
+            		transcript = transcript.replace("->", "arrow pointing right");
                 func_obj.attributes['current_data']['current_index'] = comicId;
                 func_obj.attributes['current_data']['current_prompt'] = transcript;
                 var reprompt = "What can I help you with?";
